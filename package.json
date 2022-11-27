@@ -7,7 +7,7 @@
   "description": "This is for taking notes",
   "main": "index.js",
   "scripts": {
-    "start": "npm server/index.js",
+    "start": "node server/index.js",
     "build": "cd client && npm install && npm run build"
   },
   "repository": {
