@@ -1,4 +1,4 @@
-require('dotenv').config({ override: true })
+require('dotenv').config({ override: true, debug: true })
 const express = require('express');
 const path = require('path');
 const {pool} = require('../database/db');
