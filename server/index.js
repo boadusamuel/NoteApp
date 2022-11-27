@@ -1,4 +1,4 @@
-require('dotenv').config({ override: true })
+require('dotenv').config({ override: true, debug: true })
 const express = require('express');
 const path = require('path');
 const {pool} = require('../database/db');
@@ -21,7 +21,7 @@ app.listen(PORT, () => {
 app.get("/api/notes", (req, res) => {
 
    try {
-    pool.query('SELECT * FROM notes').then((resp) => {
+    pool.query('SELECT * FROM take_note').then((resp) => {
      
         res.json(resp.rows);
     
