@@ -21,7 +21,7 @@ app.listen(PORT, () => {
 app.get("/api/notes", (req, res) => {
 
    try {
-    pool.query('SELECT * FROM take_note').then((resp) => {
+    pool.query('SELECT * FROM notes').then((resp) => {
      
         res.json(resp.rows);
     
