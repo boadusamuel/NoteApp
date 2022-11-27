@@ -1,6 +1,14 @@
 const { Pool } = require("pg");
 
-console.log(process.env.USER);
+try {
+  if(process.env.NODE_ENV !== 'production'){
+    require('dotenv').config({ override: true, debug: true })
+  }
+} catch (err) {
+  console.log(err)
+}
+
+
 
 const pool = new Pool({
   user: process.env.USER,
