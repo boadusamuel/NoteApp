@@ -3,7 +3,7 @@ var bodyParser = require("body-parser");
 const path = require("path");
 const noteController = require("../controller/noteController");
 
-const PORT = process.env.PORT || 3005;
+const PORT = process.env.PORT || 3006;
 
 const app = express();
 
