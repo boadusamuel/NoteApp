@@ -1,41 +1,20 @@
-const express = require('express');
-const path = require('path');
-const {pool} = require('../database/db');
-
+const express = require("express");
+var bodyParser = require("body-parser");
+const path = require("path");
+const noteController = require("../controller/noteController");
 
 const PORT = process.env.PORT || 3005;
 
-
 const app = express();
 
-
-app.use(express.static(path.resolve(__dirname, '../client/build')));
+app.use(express.static(path.resolve(__dirname, "../client/build")));
 
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);
 });
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/api/notes", (req, res) => {
-
-   try {
-    pool.query('SELECT * FROM notes').then((resp) => {
-
-     
-        res.json(resp.rows);
-    
-        res.status(200)
-  
-
-      if(resp.rows){
-        console.log(resp.rows)
-      }
-    
-    });
- 
- 
-
-   } catch (err) {
-    console.log(err);
-   }
-  });
+app.get("/api/notes", (req, res) => noteController.getAllNotes(req, res));
+app.post("/api/notes", (req, res) => noteController.createNote(req, res));
