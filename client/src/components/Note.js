@@ -9,12 +9,12 @@ export default function Note(){
         const response = await fetch('/api/notes');
         if(!response.ok){
             throw new Error('Something went wrong');
-        }else{
+        }else{       
             return response.json()
         }
     }
 
-    useEffect(() => fetchData().then((res) => setNote(res)).catch((e) => console.log(e)), [])
+    useEffect(() => fetchData().then((data) => setNote(data.notes)).catch((e) => console.log(e)), [])
 
     return  (
        <div>
