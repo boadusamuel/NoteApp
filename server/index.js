@@ -16,7 +16,7 @@ app.listen(PORT, () => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.get("/api/notes", (req, res) => noteController.index(req, res));
-app.post("/api/notes", (req, res) => noteController.create(req, res));
-app.put("/api/notes/:id", (req, res) => noteController.update(req, res));
-app.delete("/api/notes/:id", (req, res) => noteController.delete(req, res));
+app.get("/api/v1.0/notes", (req, res) => noteController.index(req, res));
+app.post("/api/v1.0/notes", (req, res) => noteController.create(req, res));
+app.put("/api/v1.0/notes/:id", (req, res) => noteController.update(req, res));
+app.delete("/api/v1.0/notes/:id", (req, res) => noteController.delete(req, res));
