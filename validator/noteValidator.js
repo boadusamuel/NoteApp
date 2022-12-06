@@ -3,25 +3,32 @@ const Note = require("../models").Note;
 module.exports = {
   validateRequiredTitle(req, res) {
     if (!req.body.title) {
-      return res.status(400).send({
+       res.status(400).send({
         success: "false",
         message: "title is required",
       });
+      return false;
     }
+    return true;
   },
   
   validateDuplicateTitle(req, res) {
     Note.findOne({
-      where: { title: req.body.title },
+      where: { title: req.body.title.trim() },
     }).then((noteFound) => {
       if (noteFound) {
-        if(noteFound.id === req.body.id) return;
-        return res.status(403).send({
-          success: "false",
-          message: "A note with that title exist already",
-        });
+        if(noteFound.id === Number(req.body.id)) {
+          return true;
+        }else{
+          res.status(403).send({
+            success: "false",
+            message: "A note with that title exist already",
+          });
+        }
+        return false;
       }
-    }).catch((error) => res.status(400).send(error));;
+    }).catch((error) => res.status(400).send(error));
+    return true;
   },
 
   validateNote(req, res){

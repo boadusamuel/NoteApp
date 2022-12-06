@@ -20,12 +20,14 @@ module.exports = {
   },
 
   create(req, res) {
-    noteValidator.validateRequiredTitle(req, res);
-    noteValidator.validateDuplicateTitle(req, res);
+
+   if(!noteValidator.validateRequiredTitle(req, res) || !noteValidator.validateDuplicateTitle(req, res)) return;
+
     const note = {
-      title: req.body.title,
+      title: req.body.title.trim(),
       body: req.body.body,
     };
+
     Note.create(note)
       .then((note) => {
         return res.status(201).send({
@@ -36,42 +38,46 @@ module.exports = {
       })
       .catch((error) => res.status(400).send(error));
   },
-  
+
   update(req, res) {
-    noteValidator.validateRequiredTitle(req, res);
-    noteValidator.validateDuplicateTitle(req, res);
+    if(!noteValidator.validateRequiredTitle(req, res) || !noteValidator.validateDuplicateTitle(req, res)) return;
     const note = noteValidator.validateNote(req, res);
 
     Note.update(
       {
-        title: req.body.title || note.title,
+        title: req.body.title.trim() || note.title.trim(),
         body: req.body.body,
       },
       {
         where: {
           id: req.body.id,
         },
+        returning: true,
       }
     )
-      .then((note) => {
-        return res.status(204).send();
+      .then((noteUpdated) => {
+        if(noteUpdated) res.status(200).send(
+          {
+            success: "true",
+            message: "note updated successfully",
+            note: noteUpdated[1][0]
+          }
+        );
       })
       .catch((error) => res.status(400).send(error));
   },
 
   delete(req, res) {
-    Note.destroy({
-      where: {
-        id: req.params.id,
-      },
-    })
-      .then((note) => {
-        if (note) res.status(204).send();
-        res.status(404).send({
-          success: "false",
-          message: "Note not found",
-        });
+      Note.destroy({
+        where: {
+          id: req.params.id,
+        },
       })
-      .catch((error) => res.status(400).send(error));
+        .then((note) => {
+          if (note) res.status(204).send();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
   },
 };
