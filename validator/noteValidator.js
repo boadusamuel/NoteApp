@@ -12,24 +12,22 @@ module.exports = {
     return true;
   },
   
-  validateDuplicateTitle(req, res) {
-    Note.findOne({
-      where: { title: req.body.title.trim() },
-    }).then((noteFound) => {
-      if (noteFound) {
-        if(noteFound.id === Number(req.body.id)) {
+  async validateDuplicateTitle(req, res) {
+  const note =  await Note.findOne({ where: { title: req.body.title.trim() }})
+
+      if (note) {
+        if(note.id === Number(req.body?.id)) {
           return true;
-        }else{
+        }else {
           res.status(403).send({
             success: "false",
             message: "A note with that title exist already",
           });
+          return false;
         }
-        return false;
-      }
-    }).catch((error) => res.status(400).send(error));
-    return true;
-  },
+  }
+  return true;
+},
 
   validateNote(req, res){
     Note.findByPk(req.params.id).then(noteFound => {
