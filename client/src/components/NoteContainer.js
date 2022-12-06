@@ -93,10 +93,15 @@ export default function NoteContainer({ onScroll, listInnerRef, notes }) {
               <div>
                 <Modal show={show} onHide={handleClose}>
                   <Modal.Header closeButton>
-                    <Modal.Title>{id.current ? 'Edit Note' : 'Add Note'}</Modal.Title>
+                    <Modal.Title>{id.current?.value ? 'Edit Note' : 'Add Note'}</Modal.Title>
                   </Modal.Header>
                   <Modal.Body>
                     <Form>
+                    <Form.Control
+                          className="d-none"
+                          type="text"
+                          ref={id}                     
+                        />
                       <Form.Group
                         className="mb-3"
                         controlId="exampleForm.ControlInput1"
@@ -108,11 +113,6 @@ export default function NoteContainer({ onScroll, listInnerRef, notes }) {
                           autoFocus
                           ref={title}
                           onChange={handleUpdateNote}
-                        />
-                        <Form.Control
-                          className="d-none"
-                          type="text"
-                          ref={id}                     
                         />
                         <span className="text-danger">{titleError}</span>
                       </Form.Group>
@@ -131,9 +131,16 @@ export default function NoteContainer({ onScroll, listInnerRef, notes }) {
                     </Form>
                   </Modal.Body>
                   <Modal.Footer>
-                   { !id.current && !id.current?.value ? <Button variant="primary" onClick={handleSaveNote}>
+                   { !id.current?.value ? <Button variant="primary" onClick={handleSaveNote}>
                       Save
                     </Button> : ''}
+                    {
+                      console.log(id.current)
+                     
+                    }
+                    {
+                       console.log(id.current?.value)
+                    }
                   </Modal.Footer>
                 </Modal>
               </div>
