@@ -20,27 +20,34 @@ module.exports = {
   },
 
   create(req, res) {
+    if (!noteValidator.validateRequiredTitle(req, res)) return;
 
-   if(!noteValidator.validateRequiredTitle(req, res) || !noteValidator.validateDuplicateTitle(req, res)) return;
-
-    const note = {
-      title: req.body.title.trim(),
-      body: req.body.body,
-    };
-
-    Note.create(note)
-      .then((note) => {
-        return res.status(201).send({
-          success: "true",
-          message: "note added successfully",
-          note,
-        });
-      })
-      .catch((error) => res.status(400).send(error));
+    noteValidator.validateDuplicateTitle(req, res).then((result) => {
+      if (result) {
+        const note = {
+          title: req.body.title.trim(),
+          body: req.body.body,
+        };
+    
+        Note.create(note)
+          .then((note) => {
+            return res.status(201).send({
+              success: "true",
+              message: "note added successfully",
+              note,
+            });
+          })
+          .catch((error) => res.status(400).send(error));
+      }
+    });
   },
 
   update(req, res) {
-    if(!noteValidator.validateRequiredTitle(req, res) || !noteValidator.validateDuplicateTitle(req, res)) return;
+    if (
+      !noteValidator.validateRequiredTitle(req, res) ||
+      !noteValidator.validateDuplicateTitle(req, res)
+    )
+      return;
     const note = noteValidator.validateNote(req, res);
 
     Note.update(
@@ -56,28 +63,27 @@ module.exports = {
       }
     )
       .then((noteUpdated) => {
-        if(noteUpdated) res.status(200).send(
-          {
+        if (noteUpdated)
+          res.status(200).send({
             success: "true",
             message: "note updated successfully",
-            note: noteUpdated[1][0]
-          }
-        );
+            note: noteUpdated[1][0],
+          });
       })
       .catch((error) => res.status(400).send(error));
   },
 
   delete(req, res) {
-      Note.destroy({
-        where: {
-          id: req.params.id,
-        },
+    Note.destroy({
+      where: {
+        id: req.params.id,
+      },
+    })
+      .then((note) => {
+        if (note) res.status(204).send();
       })
-        .then((note) => {
-          if (note) res.status(204).send();
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .catch((error) => {
+        console.log(error);
+      });
   },
 };
