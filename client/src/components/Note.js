@@ -1,48 +1,42 @@
-import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import NoteCard from "./NoteCard";
-
+import React, { useRef, useEffect } from "react";
+import NoteContainer from "./NoteContainer";
+import {useStore} from "../store/NoteStore";
 export default function Note() {
-  const [notes, setNote] = useState([]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [previousPage, setPreviousPage] = useState(0);
-  const [isLastList, setIsLastList] = useState(false);
+
+
+  
+  const notes = useStore((state) => state.notes);
+  const addNotes = useStore((state) => state.addNotes)
+  const currentPage= useStore((state) => state.currentPage);
+  const previousPage= useStore((state) => state.previousPage);
+  const isLastList= useStore((state) => state.isLastList);
+  const setCurrentPage= useStore((state) => state.setCurrentPage);
   const listInnerRef = useRef();
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const response = await axios.get(
-        `/api/v1.0/notes?page=${currentPage}&size=10`
-      );
+  useEffect(() => {      
+       if(currentPage === 1){
+        addNotes(currentPage);
+        setCurrentPage(currentPage);
+       }
 
-      if (!response.data.success) {
-        throw new Error("Something went wrong");
-      } else {
-        let data = response.data.data;
-        if (!data.notes.length) {
-          setIsLastList(true);
-          return;
-        }
-        setPreviousPage(currentPage);
-        setNote([...notes, ...data.notes]);
-      }
-    };
-    if (!isLastList && previousPage !== currentPage) {
-      fetchData();
-    }
-  }, [currentPage, previousPage, notes, isLastList]);
+  }, [currentPage, addNotes, setCurrentPage]);
+   
 
   const onScroll = () => {
     if (listInnerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = listInnerRef.current;
       if (scrollTop + clientHeight === scrollHeight) {
-        setCurrentPage(currentPage + 1);
+        if (!isLastList && previousPage !== currentPage) {
+          setCurrentPage(currentPage);
+          addNotes(currentPage);
+        }
       }
     }
   };
 
+
   return (
-    <NoteCard
+    <NoteContainer
     onScroll={onScroll}
     listInnerRef={listInnerRef}
     notes={notes}
